@@ -7,8 +7,8 @@ RUN apt-get update
 RUN apt-get upgrade -y
 
 #package
-RUN apt-get install -y vim git \
- aptitude build-essential
+RUN apt-get install -y git \
+ aptitude
 
 #ssh
 RUN apt-get install -y openssh-server
