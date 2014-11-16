@@ -8,7 +8,11 @@ RUN apt-get upgrade -y
 
 #package
 RUN apt-get install -y git \
- aptitude
+ aptitude htop vim dnsutils
+
+#postfix
+RUN apt-get install -y postfix
+COPY etc/postfix/main.cf /etc/postfix/main.cf
 
 #ssh
 RUN apt-get install -y openssh-server
@@ -25,3 +29,18 @@ RUN apt-get install -y supervisor
 ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 EXPOSE 22 80
 CMD ["/usr/bin/supervisord"]
+
+# locale
+RUN apt-get install -y locales language-pack-ja
+COPY etc/default/locale /etc/default/locale
+COPY etc/localtime /etc/localtime
+COPY etc/timezone /etc/timezone
+
+# cron
+RUN rm /etc/cron.weekly/*
+COPY etc/crontab /etc/crontab
+
+# gomi.pl
+RUN cd /root && git clone https://github.com/yaasita/gomi.pl.git
+COPY etc/cron.weekly/gomi /etc/cron.weekly/gomi
+RUN chmod +x /etc/cron.weekly/gomi
